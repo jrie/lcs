@@ -1,5 +1,6 @@
 # lcs
 [L]uminance [c]ontrol [s]cript - control Govee light devices using Govee web API in a command line.
+
 Using "[Nova](https://github.com/neroist/nova)" under the hood.
 
 ## What is lcs
