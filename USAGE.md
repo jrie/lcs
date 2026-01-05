@@ -1,7 +1,8 @@
 [LCS][HELP] Version v0.0.1
 
-(L)uminance (c)ontrol (s)cript or
-simply: (l)amp (c)ontrol (s)cript
+(L)uminance (c)ontrol (s)cript
+
+Or simply: (l)amp (c)ontrol (s)cript
 
 is a helper script to control "Govee" (light)
 devices by command line.
@@ -10,8 +11,8 @@ The official Govee.com web API with "Nova" as
 API driver/API commands is used.
 
 References:
-Govee: https://govee.com/
-Nova: https://github.com/neroist/nova
+- Govee: https://govee.com/
+- Nova at: https://github.com/neroist/nova
 
 Note: "Nova" has its own usage system,
 this script just extends at Nova.
