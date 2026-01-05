@@ -117,9 +117,10 @@ Single channel color operations
 	cb			=	Operate on "c"olor channel "b"lue
 
 Examples:
+
 	cr=+12			Increases red by 12
 	cr=0			Sets red to 0
-	cr=-7			Decreased red by 7
+	cr=-7			Decreases red by 7
 
 
 Note: All color channels support, the following operations.
