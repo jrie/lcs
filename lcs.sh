@@ -6,7 +6,7 @@
 #
 #	Repository: https://github.com/jrie/lcs
 #
-#	Version 0.0.1 by Jan Riechers ( jan@dwrox.net )
+#	Version 0.0.2 by Jan Riechers ( jan@dwrox.net )
 #	Using "nova" [used version: Nova v1.7.0] as
 #	API driver for the Govee.com web API"
 #
@@ -16,8 +16,8 @@
 #----------------------------------------------------------------------------------------
 # HELPERS
 #----------------------------------------------------------------------------------------
-function show_usage () {
-	echo "[LCS][HELP] Version \"v0.0.1\""
+function show_usage() {
+	echo "[LCS][HELP] Version \"v0.0.2\""
 	echo
 	echo '(L)uminance (c)ontrol (s)cript'
 	echo 'Or simply: (l)amp (c)ontrol (s)cript'
@@ -147,62 +147,74 @@ function echo_debug_nova() {
 }
 
 #----------------------------------------------------------------------------------------
-function return_operationShort_index () {
+function return_operationShort_index() {
 	actionIndex=-1
 
 	case "$1" in
-		'=')
-			actionIndex=1 ;;
-		'+')
-			actionIndex=2 ;;
-		'-')
-			actionIndex=3 ;;
-		'/')
-			actionIndex=4 ;;
-		'*')
-			actionIndex=5 ;;
-		*)
-			actionIndex=-1 ;;
+	'=')
+		actionIndex=1
+		;;
+	'+')
+		actionIndex=2
+		;;
+	'-')
+		actionIndex=3
+		;;
+	'/')
+		actionIndex=4
+		;;
+	'*')
+		actionIndex=5
+		;;
+	*)
+		actionIndex=-1
+		;;
 	esac
 
 	echo "$actionIndex"
 }
 
 #----------------------------------------------------------------------------------------
-function return_action_name () {
+function return_action_name() {
 	commandName=-1
 
 	case "$1" in
-		'b')
-			commandName="brightness" ;;
-		't')
-			commandName="turn" ;;
-		'c')
-			commandName="color" ;;
-		'p')
-			commandName="picker" ;;
-		's')
-			commandName="state" ;;
-		*)
-			commandName=-1 ;;
+	'b')
+		commandName="brightness"
+		;;
+	't')
+		commandName="turn"
+		;;
+	'c')
+		commandName="color"
+		;;
+	'p')
+		commandName="picker"
+		;;
+	's')
+		commandName="state"
+		;;
+	*)
+		commandName=-1
+		;;
 	esac
 
 	echo "$commandName"
 }
 
 #----------------------------------------------------------------------------------------
-function contains_element () {
+function contains_element() {
 	for value in $1; do
 		if [[ "$value" == "$2" ]]; then
-			return 0;
+			return 0
 		fi
 	done
 
-  	return 1
+	return 1
 }
 
 #----------------------------------------------------------------------------------------
-function check_and_clamp_value () {
+function check_and_clamp_value() {
 	local value="$1"
 	local lowerLimit="$2"
 	local upperLimit="$3"
@@ -396,7 +408,7 @@ colorValues["yellowgreen"]='#9acd32'
 #----------------------------------------------------------------------------------------
 module='[EXTCOMMAND PARSER]'
 #echo "[LCS]$module Extended command and parameter parsing init."
-validCommands=('action' 'a' 'color' 'c' 'brightness' 'b' 'channel' 'ch' 'cr' 'cg' 'cb' 'picker' 'state' 'device' 'd' 'debug' 'ndebug' 'turn' 't' 'value' 'v' '?' 'h' 'help' 'q' 'silent' )
+validCommands=('action' 'a' 'color' 'c' 'brightness' 'b' 'channel' 'ch' 'cr' 'cg' 'cb' 'picker' 'state' 'device' 'd' 'debug' 'ndebug' 'turn' 't' 'value' 'v' '?' 'h' 'help' 'q' 'silent')
 
 declare -A commandsArray
 for argument in "$@"; do
@@ -424,125 +436,125 @@ for command in "${!commandsArray[@]}"; do
 	echo_debug_lcs "commandValue	= \"$commandValue\""
 
 	case "$command" in
-		'silent')
-			commandsArray[$command]='true'
-			silent=true
+	'silent')
+		commandsArray[$command]='true'
+		silent=true
 		;;
-		'q')
-			commandsArray[$command]='true'
-			debugInspect=true
-			quitAfterDebug=true
+	'q')
+		commandsArray[$command]='true'
+		debugInspect=true
+		quitAfterDebug=true
 		;;
-		'color'|'c')
-			commandProvided=true
-			commandName="color"
-			commandParameter="-c"
+	'color' | 'c')
+		commandProvided=true
+		commandName="color"
+		commandParameter="-c"
 
-			if [[ "$commandValue" != '' ]]; then
-				commandInput="$commandValue"
-				hasValue=true
-			fi
-			;;
-		'brightness'|'b')
-			commandProvided=true
-			commandName="brightness"
-			commandParameter='-b'
+		if [[ "$commandValue" != '' ]]; then
+			commandInput="$commandValue"
+			hasValue=true
+		fi
+		;;
+	'brightness' | 'b')
+		commandProvided=true
+		commandName="brightness"
+		commandParameter='-b'
 
-			if [[ "$commandValue" != '' ]]; then
-				commandInput="$commandValue"
-				hasValue=true
-			fi
-			;;
-		'picker')
-			commandProvided=true
-			commandName="picker"
-			commandValues=('true' 'false' 't' 'f')
-			commandParameter='-s'
+		if [[ "$commandValue" != '' ]]; then
+			commandInput="$commandValue"
+			hasValue=true
+		fi
+		;;
+	'picker')
+		commandProvided=true
+		commandName="picker"
+		commandValues=('true' 'false' 't' 'f')
+		commandParameter='-s'
 
-			if [[ "$commandValue" != '' ]]; then
-				deviceId="$commandValue"
-				hasValue=true
-			fi
-			;;
-		'state')
-			commandProvided=true
-			commandName="state"
-
-			if [[ "$commandValue" != '' ]]; then
-				deviceId="$commandValue"
-				hasValue=true
-			fi
-			;;
-		'turn'|'t')
-			commandProvided=true
-			commandName="turn"
-			commandValues=('on' 'off' 'toggle' 't')
-			commandParameter='-s'
-
-			if [[ "$commandValue" != '' ]]; then
-				commandInput="$commandValue"
-				hasValue=true
-			fi
-			;;
-		'value'|'v')
-			if [[ "$commandValue" != '' ]]; then
-				commandInput="$commandValue"
-				hasValue=true
-			fi
-			;;
-		'device'|'d')
+		if [[ "$commandValue" != '' ]]; then
 			deviceId="$commandValue"
-			;;
-		'action'|'a')
-			calcOperator="$commandValue"
-			hasAction=true
-			;;
-		'debug')
-			debugInspect=true
-			commandsArray[$command]='true'
-			echo "[LCS] Debug active!"
-			;;
-		'ndebug')
-			debugNova=true
-			commandsArray[$command]='true'
-			echo "[LCS] Debug \"Nova\" partially active!"
-			;;
-		'channel' | 'ch' )
-			commandProvided=true
-			commandName="color"
-			commandParameter="-c"
+			hasValue=true
+		fi
+		;;
+	'state')
+		commandProvided=true
+		commandName="state"
 
-			if [[ "$commandValue" != '' ]]; then
-				workOnColorChannel="$commandValue"
-				hasValue=true
-			fi
+		if [[ "$commandValue" != '' ]]; then
+			deviceId="$commandValue"
+			hasValue=true
+		fi
+		;;
+	'turn' | 't')
+		commandProvided=true
+		commandName="turn"
+		commandValues=('on' 'off' 'toggle' 't')
+		commandParameter='-s'
 
-			workOnSingleChannel=true
-			;;
+		if [[ "$commandValue" != '' ]]; then
+			commandInput="$commandValue"
+			hasValue=true
+		fi
+		;;
+	'value' | 'v')
+		if [[ "$commandValue" != '' ]]; then
+			commandInput="$commandValue"
+			hasValue=true
+		fi
+		;;
+	'device' | 'd')
+		deviceId="$commandValue"
+		;;
+	'action' | 'a')
+		calcOperator="$commandValue"
+		hasAction=true
+		;;
+	'debug')
+		debugInspect=true
+		commandsArray[$command]='true'
+		echo "[LCS] Debug active!"
+		;;
+	'ndebug')
+		debugNova=true
+		commandsArray[$command]='true'
+		echo "[LCS] Debug \"Nova\" partially active!"
+		;;
+	'channel' | 'ch')
+		commandProvided=true
+		commandName="color"
+		commandParameter="-c"
 
-		'cr' | 'cg' | 'cb' )
-			commandProvided=true
-			commandName="color"
-			commandParameter="-c"
-			case "$command" in
-				'cr') workOnColorChannel="r" ;;
-				'cg') workOnColorChannel="g" ;;
-				'cb') workOnColorChannel="b" ;;
-			esac
+		if [[ "$commandValue" != '' ]]; then
+			workOnColorChannel="$commandValue"
+			hasValue=true
+		fi
 
-			workOnSingleChannel=true
-			if [[ "$commandValue" != '' ]]; then
-				commandInput="$commandValue"
-				hasValue=true
-			fi
-			;;
-		'help' | 'h' | '?')
-			show_usage
-			exit 0
-			;;
-		*)
-			echo "[LCS]$module Unhandled command: $command"
-			;;
+		workOnSingleChannel=true
+		;;
+
+	'cr' | 'cg' | 'cb')
+		commandProvided=true
+		commandName="color"
+		commandParameter="-c"
+		case "$command" in
+		'cr') workOnColorChannel="r" ;;
+		'cg') workOnColorChannel="g" ;;
+		'cb') workOnColorChannel="b" ;;
+		esac
+
+		workOnSingleChannel=true
+		if [[ "$commandValue" != '' ]]; then
+			commandInput="$commandValue"
+			hasValue=true
+		fi
+		;;
+	'help' | 'h' | '?')
+		show_usage
+		exit 0
+		;;
+	*)
+		echo "[LCS]$module Unhandled command: $command"
+		;;
 	esac
 done
 
@@ -551,50 +563,50 @@ done
 #----------------------------------------------------------------------------------------
 while getopts 'o:a:v:d:c:inhs' flag; do
 	case "${flag}" in
-		'o')
-			operationShort="${OPTARG}"
+	'o')
+		operationShort="${OPTARG}"
 
-			if [[ "$operationShort" == 'c' ]]; then
-				commandParameter="-c"
-			fi
-			;;
-		'a')
-			calcOperator="${OPTARG}"
-			hasAction=true
-			;;
-		'v')
-			commandInput="${OPTARG}"
-			hasValue=true
-			;;
-		'd')
-			deviceId="${OPTARG}"
-			;;
-		'i')
-			debugInspect=true
-			echo "[LCS] Debug active!"
-			;;
-		'c')
-			commandName="color"
-			commandParameter='-c'
-			workOnColorChannel="${OPTARG}"
-			workOnSingleChannel=true
-			;;
-		'n')
-			debugNova=true
-			echo "[LCS] Debug \"Nova\" partially active!"
-			;;
-		's')
-			silent=true
-			;;
-		'h' | '?')
-			show_usage
-			exit 0
-			;;
-		*)
-			if [[ "$commandProvided" != true ]]; then
-				echo "[LCS]$module Unknown command provided. Use \"-h\" for help."
-			fi
-			;;
+		if [[ "$operationShort" == 'c' ]]; then
+			commandParameter="-c"
+		fi
+		;;
+	'a')
+		calcOperator="${OPTARG}"
+		hasAction=true
+		;;
+	'v')
+		commandInput="${OPTARG}"
+		hasValue=true
+		;;
+	'd')
+		deviceId="${OPTARG}"
+		;;
+	'i')
+		debugInspect=true
+		echo "[LCS] Debug active!"
+		;;
+	'c')
+		commandName="color"
+		commandParameter='-c'
+		workOnColorChannel="${OPTARG}"
+		workOnSingleChannel=true
+		;;
+	'n')
+		debugNova=true
+		echo "[LCS] Debug \"Nova\" partially active!"
+		;;
+	's')
+		silent=true
+		;;
+	'h' | '?')
+		show_usage
+		exit 0
+		;;
+	*)
+		if [[ "$commandProvided" != true ]]; then
+			echo "[LCS]$module Unknown command provided. Use \"-h\" for help."
+		fi
+		;;
 	esac
 done
 
@@ -623,7 +635,7 @@ if [[ "$silent" == false ]]; then
 	echo '#----------------------------------------------------------------------------------------'
 fi
 
-hash nova &> /dev/null || {
+hash nova &>/dev/null || {
 	echo "\"Nova\" not found or installed. Get it from \"https://github.com/neroist/nova\"."
 	exit 1
 }
@@ -680,9 +692,9 @@ if [[ "$workOnSingleChannel" == true ]]; then
 
 		for channel in "${possibleChannels[@]}"; do
 			case $channel in
-				'r') colorName='red';;
-				'g') colorName='green';;
-				'b') colorName='blue';;
+			'r') colorName='red' ;;
+			'g') colorName='green' ;;
+			'b') colorName='blue' ;;
 			esac
 			echo "\"$channel\" for \"$colorName\""
 		done
@@ -698,17 +710,17 @@ if [[ "${commandInput:0:1}" != '#' ]]; then
 			echo "[LCS]$module Valid color name \"$commandInput\" provided."
 		fi
 	elif [[ "$hasAction" == true && "$hasValue" == true ]]; then
-        singleValueFloat=$(echo "$commandInput" | grep -oE '([0-9]+(\.){0,1}[0-9]{0,})')
-				commandInput="$singleValueFloat"
+		singleValueFloat=$(echo "$commandInput" | grep -oE '([0-9]+(\.){0,1}[0-9]{0,})')
+		commandInput="$singleValueFloat"
 
-        if [[ "$singleValueFloat" != "$commandInput" ]]; then
-            echo "[LCS]$module Action used but not a single number set as input value for calculation."
-            exit
-        elif [[ "${singleValueFloat: -1}" == '.' ]]; then
-            singleValueFloatCorrected+="0"
+		if [[ "$singleValueFloat" != "$commandInput" ]]; then
+			echo "[LCS]$module Action used but not a single number set as input value for calculation."
+			exit
+		elif [[ "${singleValueFloat: -1}" == '.' ]]; then
+			singleValueFloatCorrected+="0"
 			commandInput="$singleValueFloatCorrected"
 			echo "[LCS]$module Corrected your input from \"$singleValueFloat\" to \"$singleValueFloatCorrected\""
-    fi
+		fi
 	elif [[ "$hasValue" == true && "$commandName" == 'color' && "$workOnSingleChannel" == false ]]; then
 		#rgbValues=$(echo "$commandInput" | tr -s '\=\+\-\*\/\,' | grep -oE "$cleanInputRE" | grep -oE '^(([\+\-\*\/]{0,1}[0-9]{1,3})(,|\s|\+|\-|\*|\/){0,1})+')
 		#| grep -oE '^(([\+\-\*\/]{0,1}[0-9]{1,3})(,|\s|\+|\-|\*|\/){0,1})+'
@@ -716,7 +728,7 @@ if [[ "${commandInput:0:1}" != '#' ]]; then
 		echo_debug_lcs "[LCS]$module [DEBUG] rgbValues: $rgbValues"
 
 		rgbArray=()
-		IFS=',' read -ra rgbArray <<< "$rgbValues"
+		IFS=',' read -ra rgbArray <<<"$rgbValues"
 
 		if [[ "${#rgbArray[@]}" -ne 3 ]]; then
 			echo "[LCS]$module ${#rgbArray[@]} RGB values provided. Required are 3 comma separated values from \"0\" to \"255\" like \"255,0,0\" for \"red\"."
@@ -730,7 +742,7 @@ if [[ "${commandInput:0:1}" != '#' ]]; then
 
 			if ! [[ "$value" =~ $startDigitRE ]]; then
 				testOperator=${value:0:1}
-				testValue=${value: 1}
+				testValue=${value:1}
 				hasOperator=true
 			else
 				testValue="$value"
@@ -766,54 +778,60 @@ if [[ "${commandInput:0:1}" != '#' ]]; then
 			exit
 		fi
 
-		commandInput=$(IFS=',';echo "${rgbArray[*]}")
+		commandInput=$(
+			IFS=','
+			echo "${rgbArray[*]}"
+		)
 	elif [[ "$hasValue" == true && "$commandName" == 'color' && "$workOnSingleChannel" == true ]]; then
-	value=$(echo "$commandInput" | grep -oE '(\-|\+|\*|\/){0,1}[0-9]{1,3}(\.){0,1}[0-9]{0,}')
-	valueCount=$(IFS=""; echo "$value" | wc -l)
-	if [[ "$valueCount" -ne 1 ]]; then
-	echo "[LCS]$module Provided RGB value has \"$valueCount\" values, but must be only one value from \"-255\" to \"255\"."
-	exit 6
-	fi
+		value=$(echo "$commandInput" | grep -oE '(\-|\+|\*|\/){0,1}[0-9]{1,3}(\.){0,1}[0-9]{0,}')
+		valueCount=$(
+			IFS=""
+			echo "$value" | wc -l
+		)
+		if [[ "$valueCount" -ne 1 ]]; then
+			echo "[LCS]$module Provided RGB value has \"$valueCount\" values, but must be only one value from \"-255\" to \"255\"."
+			exit 6
+		fi
 
-	if [[ "$value" =~ $hasNotOnlyDigitsRE ]]; then
-	#TODO: Improve this parsing to check of "0.5" and alike
-	compareValue=$(echo "$value" | grep -oE '[0-9]+' | head -n1)
+		if [[ "$value" =~ $hasNotOnlyDigitsRE ]]; then
+			#TODO: Improve this parsing to check of "0.5" and alike
+			compareValue=$(echo "$value" | grep -oE '[0-9]+' | head -n1)
 
-	if [[ "${value:0:1}" == '+' || "${value:0:1}" == '-' ]]; then
-	if [[ "$compareValue" -lt -255 || "$compareValue" -gt 255 ]]; then
-		echo "[LCS]$module Provided RGB calculation value is \"${value:0:1}$compareValue\" but must be a value from \"-255\" to \"255\"."
-		exit 6
-	elif [[ "$compareValue" -eq 0 ]]; then
-		echo "[LCS]$module Provided RGB value is \"${value:0:1}$compareValue\" but addition or substraction must be not exactly \"0\""
-		exit 6
-	fi
-	elif [[ "${value:0:1}" != '=' && "$compareValue" -eq 0 || "$compareValue" -eq 1 ]]; then
+			if [[ "${value:0:1}" == '+' || "${value:0:1}" == '-' ]]; then
+				if [[ "$compareValue" -lt -255 || "$compareValue" -gt 255 ]]; then
+					echo "[LCS]$module Provided RGB calculation value is \"${value:0:1}$compareValue\" but must be a value from \"-255\" to \"255\"."
+					exit 6
+				elif [[ "$compareValue" -eq 0 ]]; then
+					echo "[LCS]$module Provided RGB value is \"${value:0:1}$compareValue\" but addition or substraction must be not exactly \"0\""
+					exit 6
+				fi
+			elif [[ "${value:0:1}" != '=' && "$compareValue" -eq 0 || "$compareValue" -eq 1 ]]; then
 
-	echo "[LCS]$module When multiplication or division is used a value of exactly \"0\" or \"1\" will not do anything. Aborting."
-	#exit 6
-	fi
-	elif [[ "$value" -lt -255 || "$value" -gt 255 ]]; then
-	echo "[LCS]$module Provided RGB value is \"$value\" but must be a value from \"-255\" to \"255\"."
-	exit 6
-	else
-	commandInput="$value"
-	fi
+				echo "[LCS]$module When multiplication or division is used a value of exactly \"0\" or \"1\" will not do anything. Aborting."
+			#exit 6
+			fi
+		elif [[ "$value" -lt -255 || "$value" -gt 255 ]]; then
+			echo "[LCS]$module Provided RGB value is \"$value\" but must be a value from \"-255\" to \"255\"."
+			exit 6
+		else
+			commandInput="$value"
+		fi
 
-	if [[ "${commandInput:0:1}" =~ $startDigitRE ]]; then
-	if [[ "$hasAction" == false ]]; then
-	calcOperator='='
-	fi
-	else
-	calcOperator="${commandInput:0:1}"
-	commandInput="${commandInput:1}"
-	fi
+		if [[ "${commandInput:0:1}" =~ $startDigitRE ]]; then
+			if [[ "$hasAction" == false ]]; then
+				calcOperator='='
+			fi
+		else
+			calcOperator="${commandInput:0:1}"
+			commandInput="${commandInput:1}"
+		fi
 
-	echo_debug_lcs "[LCS]$module Working on single channel with command input value \"$commandInput\" and calculation operater \"$calcOperator\"."
+		echo_debug_lcs "[LCS]$module Working on single channel with command input value \"$commandInput\" and calculation operater \"$calcOperator\"."
 	fi
 
 	if [[ "$hasValue" == true && "$commandName" == 'brightness' ]]; then
 		if [[ "$hasOperation" == false ]]; then
-				calcOperator='='
+			calcOperator='='
 		fi
 
 		if ! [[ "${commandInput:0:1}" =~ $startDigitRE ]]; then
@@ -860,7 +878,7 @@ if [[ "${commandInput:0:1}" != '#' ]]; then
 		fi
 	fi
 
-  echo_debug_lcs "[LCS]$module Here we should be fine with the input/output of \"$commandInput\""
+	echo_debug_lcs "[LCS]$module Here we should be fine with the input/output of \"$commandInput\""
 else
 	if [[ "${#commandInput}" -ne 7 ]]; then
 		inputLength="${#commandInput}"
@@ -925,7 +943,7 @@ if [[ $debugInspect == true ]]; then
 	echo "workOnSingleChannel	=	\"$workOnSingleChannel\""
 	echo
 	echo "debugInspect		=	\"$debugInspect\""
-	echo "silent		=\"$silent\""
+	echo "silent			=	\"$silent\""
 	echo "debugNova		=	\"$debugNova\""
 	echo
 	echo "Nova version		=	\"$novaVersion\""
@@ -1012,7 +1030,6 @@ fi
 # / End of input validation
 #----------------------------------------------------------------------------------------
 
-
 #----------------------------------------------------------------------------------------
 # Start script work
 #----------------------------------------------------------------------------------------
@@ -1090,7 +1107,7 @@ elif [[ "$commandName" == 'color' ]]; then
 			deviceIndex="$deviceId"
 		else
 			# shellcheck disable=SC2178 # Array is provied by command
-			currentValues=$(nova "$commandName" "$deviceQuery" $commandParameter)
+			currentValues=($(nova "$commandName" "$deviceQuery" $commandParameter))
 			deviceIndex=0
 		fi
 
@@ -1109,10 +1126,10 @@ elif [[ "$commandName" == 'color' ]]; then
 			outputHexColors=()
 
 			slicePosition=1
-			for (( x=0; x < 3; ++x )); do
+			for ((x = 0; x < 3; ++x)); do
 				hexValue=${originalHexColor:$slicePosition:2}
 				decimalHexColors+=("$(echo "ibase=16; $hexValue" | bc)")
-				((slicePosition+=2))
+				((slicePosition += 2))
 			done
 
 			echo_debug_lcs "[LCS]$module Converted decimal hex color values \"${decimalHexColors[*]}\""
@@ -1121,15 +1138,15 @@ elif [[ "$commandName" == 'color' ]]; then
 				echo_debug_lcs "[LCS]$module Work on single color channel on device \"$deviceIndex\"."
 
 				case $workOnColorChannel in
-					'r') channel=0;;
-					'g') channel=1;;
-					'b') channel=2;;
+				'r') channel=0 ;;
+				'g') channel=1 ;;
+				'b') channel=2 ;;
 				esac
 
 				case $channel in
-					0) colorName='red';;
-					1) colorName='green';;
-					2) colorName='blue';;
+				0) colorName='red' ;;
+				1) colorName='green' ;;
+				2) colorName='blue' ;;
 				esac
 
 				commandInput=$(echo "$commandInput" | bc)
@@ -1168,7 +1185,7 @@ elif [[ "$commandName" == 'color' ]]; then
 							calculatedDecimal="$commandInput"
 						else
 							echo_debug_lcs "[LCS]$module BC command input: \"base=10;scale=0; $decimalValue $calcOperator $commandInput\""
-							calculatedDecimal=$(echo "base=10;scale=0; $decimalValue $calcOperator $commandInput" | bc | cut -d'.' -f1 )
+							calculatedDecimal=$(echo "base=10;scale=0; $decimalValue $calcOperator $commandInput" | bc | cut -d'.' -f1)
 						fi
 
 						echo_debug_lcs "[LCS]$module Decimal value after calculation \"$calculatedDecimal\""
@@ -1183,13 +1200,12 @@ elif [[ "$commandName" == 'color' ]]; then
 						continue
 					fi
 
-
 					if [[ "$calculatedDecimal" -lt 0 || "$calculatedDecimal" -gt 255 ]]; then
 						calculatedDecimalClamped=$(check_and_clamp_value "$calculatedDecimal" "0" "255")
 						case $colorIndex in
-							0) colorName='red';;
-							1) colorName='green';;
-							2) colorName='blue';;
+						0) colorName='red' ;;
+						1) colorName='green' ;;
+						2) colorName='blue' ;;
 						esac
 
 						echo "[LCS]$module Clamped value of \"$commandName\" \"$colorName\" to \"$calculatedDecimalClamped\" for device id \"$deviceIndex\" instead of \"$calculatedDecimal\""
@@ -1213,7 +1229,10 @@ elif [[ "$commandName" == 'color' ]]; then
 					((colorIndex++))
 				done
 
-				processedValue=$(IFS=''; echo "#${outputHexColors[*]}")
+				processedValue=$(
+					IFS=''
+					echo "#${outputHexColors[*]}"
+				)
 				echo_debug_lcs "[LCS]$module Calculated hex color: \"$processedValue\""
 
 				newHexColorLowered=$(echo "$processedValue" | tr '[:upper:]' '[:lower:]')
@@ -1231,7 +1250,7 @@ elif [[ "$commandName" == 'color' ]]; then
 				for decimalValue in "${decimalHexColors[@]}"; do
 					echo_debug_lcs "[LCS]$module Decimal value before calculation \"$decimalValue\""
 					if [[ "$calcOperator" != '=' ]]; then
-						calculatedDecimal=$(echo "base=10;scale=0; $decimalValue $calcOperator $commandInput" | bc | cut -d'.' -f1 )
+						calculatedDecimal=$(echo "base=10;scale=0; $decimalValue $calcOperator $commandInput" | bc | cut -d'.' -f1)
 					else
 						calculatedDecimal="$commandInput"
 					fi
@@ -1241,9 +1260,9 @@ elif [[ "$commandName" == 'color' ]]; then
 					if [[ "$calculatedDecimal" -lt 0 || "$calculatedDecimal" -gt 255 ]]; then
 						calculatedDecimalClamped=$(check_and_clamp_value "$calculatedDecimal" "0" "255")
 						case $colorIndex in
-							0) colorName='red';;
-							1) colorName='green';;
-							2) colorName='blue';;
+						0) colorName='red' ;;
+						1) colorName='green' ;;
+						2) colorName='blue' ;;
 						esac
 
 						echo "[LCS]$module Clamped value of \"$commandName\" \"$colorName\" to \"$calculatedDecimalClamped\" for device id \"$deviceIndex\" instead of \"$calculatedDecimal\""
@@ -1260,7 +1279,10 @@ elif [[ "$commandName" == 'color' ]]; then
 				done
 			fi
 
-			processedValue=$(IFS=''; echo "#${outputHexColors[*]}")
+			processedValue=$(
+				IFS=''
+				echo "#${outputHexColors[*]}"
+			)
 			echo_debug_lcs "[LCS]$module Calculated hex color: \"$processedValue\""
 
 			newHexColorLowered=$(echo "$processedValue" | tr '[:upper:]' '[:lower:]')
@@ -1284,7 +1306,7 @@ elif [[ "$commandName" == 'color' ]]; then
 		echo_debug_lcs "[LCS][DEBUG]$module rgbValues $rgbValues"
 
 		rgbArray=()
-		IFS=',' read -ra rgbArray <<< "$rgbValues"
+		IFS=',' read -ra rgbArray <<<"$rgbValues"
 
 		if [[ "${#rgbArray[@]}" -ne 3 ]]; then
 			echo "[LCS]$module ${#rgbArray[@]} RGB values provided. Required are 3 comma separated values from \"0\" to \"255\" like \"255,0,0\" for \"red\""
@@ -1307,7 +1329,7 @@ elif [[ "$commandName" == 'color' ]]; then
 				calcOperator="${value:0:1}"
 				# TODO: Add input debugging for multiplication and division!
 				if [[ "$calcOperator" == '+' || "$calcOperator" == '-' ]]; then
-					calcValueTmp="${value: 1}"
+					calcValueTmp="${value:1}"
 					calcValueCorrected=$(echo "$calcValueTmp" | grep -oE '^[0-9]+')
 
 					if [[ "$calcValueCorrected" -lt -255 || "$calcValueCorrected" -gt 255 ]]; then
@@ -1333,7 +1355,7 @@ elif [[ "$commandName" == 'color' ]]; then
 				deviceIndex="$deviceId"
 			else
 				# shellcheck disable=SC2178 # Array is provied by command
-				currentValues=$(nova "$commandName" "$deviceQuery" $commandParameter)
+				currentValues=($(nova "$commandName" "$deviceQuery" $commandParameter))
 				deviceIndex=0
 			fi
 
@@ -1351,14 +1373,14 @@ elif [[ "$commandName" == 'color' ]]; then
 				echo_debug_nova "[NOVA ACTION]$module Finished \"$commandName\" query command on device id \"$deviceIndex\" with result \"$currentValue\""
 
 				startPosition=1
-				for (( x=0; x < 3; x++ )); do
+				for ((x = 0; x < 3; x++)); do
 					hexValue=${currentValue:$startPosition:2}
 					decimalValue=$(echo "scale=0;ibase=16; $hexValue" | bc)
 
 					case "$x" in
-						0) colorName='red';;
-						1) colorName='green';;
-						2) colorName='blue';;
+					0) colorName='red' ;;
+					1) colorName='green' ;;
+					2) colorName='blue' ;;
 					esac
 
 					echo "[LCS]$module Value for \"$colorName\" on device \"$deviceIndex\" reported as hex value \"$hexValue\" or decimal value of \"$decimalValue\""
@@ -1366,7 +1388,7 @@ elif [[ "$commandName" == 'color' ]]; then
 					rgbItem="${rgbArray[$x]}"
 
 					calcOperator="${rgbItem:0:1}"
-					calcValue="${rgbItem: 1}"
+					calcValue="${rgbItem:1}"
 
 					echo_debug_lcs "[LCS][DEBUG]$module rgbItem: $rgbItem"
 					echo_debug_lcs "[LCS][DEBUG]$module calcOperator: $calcOperator"
@@ -1377,7 +1399,6 @@ elif [[ "$commandName" == 'color' ]]; then
 						finalizedHexNumberArray+=("$hexFilled")
 					else
 						calculatedDecimal=$(echo "scale=0; $decimalValue $calcOperator $calcValue" | bc)
-
 
 						if [[ ! "$calculatedDecimal" =~ /./ ]]; then
 							calculatedDecimal=$(echo "$calculatedDecimal" | cut -d'.' -f1)
@@ -1396,23 +1417,24 @@ elif [[ "$commandName" == 'color' ]]; then
 						finalizedHexNumberArray+=("$hexFilled")
 					fi
 
-					((startPosition+=2))
+					((startPosition += 2))
 				done
 
-				hexValue=$(IFS=''; echo "#${finalizedHexNumberArray[*]}")
+				hexValue=$(
+					IFS=''
+					echo "#${finalizedHexNumberArray[*]}"
+				)
 				if [[ "$silent" == false ]]; then
 					echo "[LCS]$module New calculated value on device \"$deviceIndex\" hex value \"$hexValue\""
 				fi
 
 				processedValue="$hexValue"
 
-
 				if [[ "$currentValue" == "$processedValue" ]]; then
 					echo "[LCS]$module Value for \"$commandName\" on device \"$deviceIndex\" is already set to \"$processedValue\", not changing."
 					((deviceIndex++))
 					continue
 				fi
-
 
 				echo_debug_nova "[NOVA ACTION]$module Running in 2 \"$commandName\" command on device id \"$deviceId\""
 				nova "$commandName" "$deviceQuery" "$novaOutput" "$commandParameter"="$processedValue"
@@ -1433,9 +1455,9 @@ elif [[ "$commandName" == 'color' ]]; then
 			for value in "${rgbArray[@]}"; do
 				if [[ "$value" -lt 0 || "$value" -gt 255 ]]; then
 					case $colorIndex in
-						1) colorName='red';;
-						2) colorName='green';;
-						3) colorName='blue';;
+					1) colorName='red' ;;
+					2) colorName='green' ;;
+					3) colorName='blue' ;;
 					esac
 					echo "[LCS]$module RGB value at position \"$(colorIndex+1)\" (\"$colorName\") is \"$value\", possible values range from \"0\" to \"255\" like \"255,0,0\" for \"red\""
 					hasError=true
@@ -1451,7 +1473,10 @@ elif [[ "$commandName" == 'color' ]]; then
 				exit
 			fi
 
-			processedValue=$(IFS=''; echo "#${hexColors[*]}")
+			processedValue=$(
+				IFS=''
+				echo "#${hexColors[*]}"
+			)
 
 			echo_debug_lcs "[LCS]$debugPrefix Color \"${processedValue[*]}\" are valid rgb color values."
 			if [[ "$silent" == false ]]; then
@@ -1469,7 +1494,7 @@ elif [[ "$commandName" == 'color' ]]; then
 			deviceIndex="$deviceId"
 		else
 			# shellcheck disable=SC2178 # Array is provied by command
-			currentValues=$(nova "$commandName" "$deviceQuery" $commandParameter)
+			currentValues=($(nova "$commandName" "$deviceQuery" $commandParameter))
 			deviceIndex=0
 		fi
 
@@ -1481,7 +1506,11 @@ elif [[ "$commandName" == 'color' ]]; then
 				continue
 			fi
 
-			currentValue=$(echo "$value" | grep -oE '[#0-9a-fA-Z]+$')
+			currentValue=$(echo "$value" | grep -oE '#[0-9a-fA-Z]+$')
+
+			if [[ "$currentValue" == '' ]]; then
+				continue
+			fi
 
 			echo_debug_nova "[NOVA ACTION]$module Finished \"$commandName\" query command on device id \"$deviceIndex\" with result \"$currentValue\""
 			if [[ "$workOnSingleChannel" == false ]] && [[ "$isColorValue" != true || "$hasValue" == false ]]; then
@@ -1493,21 +1522,21 @@ elif [[ "$commandName" == 'color' ]]; then
 			echo_debug_lcs "[LCS]$module Work on single color channel on device \"$deviceIndex\"."
 
 			case "$workOnColorChannel" in
-				'r') channel=0;;
-				'g') channel=1;;
-				'b') channel=2;;
+			'r') channel=0 ;;
+			'g') channel=1 ;;
+			'b') channel=2 ;;
 			esac
 
 			case "$channel" in
-				0) colorName='red';;
-				1) colorName='green';;
-				2) colorName='blue';;
+			0) colorName='red' ;;
+			1) colorName='green' ;;
+			2) colorName='blue' ;;
 			esac
 
 			startPosition=1
-			for (( x=0; x < 3; x++ )); do
+			for ((x = 0; x < 3; x++)); do
 				if [[ "$x" -ne "$channel" ]]; then
-					((startPosition+=2))
+					((startPosition += 2))
 					continue
 				fi
 
@@ -1536,7 +1565,7 @@ elif [[ "$commandName" == 'color' ]]; then
 		deviceIndex="$deviceId"
 	else
 		# shellcheck disable=SC2178 # Array is provied by command
-		currentValues=$(nova "$commandName" "$deviceQuery" $commandParameter)
+		currentValues=($(nova "$commandName" "$deviceQuery" $commandParameter))
 		deviceIndex=0
 	fi
 
@@ -1592,7 +1621,7 @@ elif [[ "$commandName" == 'turn' ]]; then
 		deviceIndex="$deviceId"
 	else
 		# shellcheck disable=SC2178 # Array is provied by command
-		currentValues=$(nova "$commandName" "$deviceQuery" $commandParameter)
+		currentValues=($(nova "$commandName" "$deviceQuery" $commandParameter))
 		deviceIndex=0
 	fi
 
@@ -1607,10 +1636,15 @@ elif [[ "$commandName" == 'turn' ]]; then
 		fi
 
 		currentValue=$(echo "$value" | grep -oE '(on|off)$')
+		if [[ "$currentValue" == '' ]]; then
+			continue
+		fi
+
 		echo_debug_nova "[NOVA ACTION]$module Finished \"$commandName\" query command on device \"$deviceIndex\" with result \"$currentValue\""
 
 		if [[ "$hasValue" == false || "$commandInput" == '0' || "$commandInput" == false ]]; then
-			echo "[LCS]$module Current value for \"$commandName\" on device \"$deviceIndex\": \"$currentValue\""
+			echo "[LCS]$module Current value for \"$commandName\" on device \"$deviceIndex\" is \"$currentValue\""
+			((deviceIndex++))
 			continue
 		fi
 
@@ -1650,10 +1684,10 @@ elif [[ "$commandName" == "brightness" ]]; then
 	deviceIndex=0
 	commandParameter="-b"
 
-	if [[ "$hasValue" == true && "$hasOperation" == false && "$commandProvided" == false ]]; then
+	if [[ "$hasValue" == false && "$hasOperation" == false && "$hasAction" == false ]]; then
 		if [[ "$allDevices" == true ]]; then
 			# shellcheck disable=SC2178 # Array is provied by command
-			currentValues=$(nova "$commandName" "$deviceQuery")
+			currentValues=($(nova "$commandName" "$deviceQuery"))
 			echo_debug_nova "[NOVA ACTION]$module Finished queries \"$commandName\" on \"$deviceId\""
 			deviceIndex=0
 		else
@@ -1661,7 +1695,7 @@ elif [[ "$commandName" == "brightness" ]]; then
 
 			invalidDevice=$(echo "$tmpValue" | grep -iE 'Invalid device')
 			if [[ "$invalidDevice" != '' ]]; then
-				echo "[LCS]$module Device with id \"$deviceIndex\" is invalid."
+				echo "[LCS]$module Device with id \"$deviceId\" is invalid."
 				exit 1
 			fi
 			echo_debug_nova "[NOVA ACTION]$module Finished query \"$commandName\" on \"$deviceId\""
@@ -1678,7 +1712,10 @@ elif [[ "$commandName" == "brightness" ]]; then
 				continue
 			fi
 
-			currentValue=$(echo "$value" | grep -oE '[0-9]{1,3}%$')
+			currentValue=$(echo "$value" | grep -oE '[0-9]{1,3}%')
+			if [[ "$currentValue" == '' ]]; then
+				continue
+			fi
 
 			echo "[LCS] Value for \"$commandName\" on device \"$deviceIndex\" reported as \"$currentValue\""
 			((deviceIndex++))
@@ -1708,7 +1745,7 @@ elif [[ "$commandName" == "brightness" ]]; then
 		fi
 
 		exit 0
-	elif  [[ ! $commandInput =~ $numberRE && "$hasValue" == true ]]; then
+	elif [[ ! $commandInput =~ $numberRE && "$hasValue" == true ]]; then
 		echo "[LCS]$module Please provide either a unsigned integer or a whole floating point number."
 		exit 8
 	fi
@@ -1720,7 +1757,7 @@ elif [[ "$commandName" == "brightness" ]]; then
 
 	if [[ "$allDevices" == true ]]; then
 		# shellcheck disable=SC2178 # Array is provied by command
-		currentValues=$(nova "$commandName" "$deviceQuery")
+		currentValues=($(nova "$commandName" "$deviceQuery"))
 		echo_debug_nova "[NOVA ACTION]$module Finished queries \"$commandName\" on \"$deviceId\""
 		deviceIndex=0
 	else
@@ -1738,11 +1775,7 @@ elif [[ "$commandName" == "brightness" ]]; then
 			continue
 		fi
 
-		if [[ "$commandName" == 'brightness' ]]; then
-			currentValue=$(echo "$value" | grep -oE '[0-9]{1,3}%$' | cut -d'%' -f1)
-		else
-			currentValue="$value"
-		fi
+		currentValue=$(echo "$value" | grep -oE '[0-9]{1,3}%$' | cut -d'%' -f1)
 
 		if [[ "$calcOperator" != '=' ]] && [[ "$hasAction" == true || "$hasOperation" == true ]]; then
 			processedValue=$(echo "scale=0; $currentValue $calcOperator $commandInput" | bc | grep -oE '^[0-9]+')
@@ -1751,9 +1784,7 @@ elif [[ "$commandName" == "brightness" ]]; then
 			processedValue="$commandInput"
 		fi
 
-		if [[ "$commandName" == 'brightness' ]]; then
-			processedValue=$(check_and_clamp_value "$processedValue" "1" "100")
-		fi
+		processedValue=$(check_and_clamp_value "$processedValue" "1" "100")
 
 		echo_debug_lcs "[LCS][DEBUG] processedValue = $processedValue"
 		echo_debug_lcs "[/DEBUGGING CALCULATION]"
